@@ -1,6 +1,6 @@
 # scope_hub firmware
 
-Firmware for the RP2350A on the scope_hub board. It reads the power monitors, environment sensors and GPS, and switches the DC and USB outputs. A controls it over one vendor-defined USB HID interface. See the driver and the `scopehub` tool in `../driver` for details.
+Firmware for the RP2350A on the scope_hub board. It reads the power monitors, environment sensors and GPS, and switches the DC and USB outputs. It is controlled over one vendor-defined USB HID interface. See the driver and the `scopehub` tool in `../driver` for details.
 
 ## Build and flash
 
@@ -14,4 +14,4 @@ make bootsel  # reboot the running board into the boot ROM and stay there
 
 ## License
 
-[AGPL-3.0-only](LICENSE). The Pico SDK and TinyUSB keep their BSD-3 and MIT licenses.
+[AGPL-3.0-only](LICENSE).
