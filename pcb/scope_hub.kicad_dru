@@ -1,0 +1,255 @@
+(version 1)
+# JLCPCB design rules, carried over from pi_mount_gps.kicad_dru (2026-09-17).
+# Stackup (changed 2026-09-28): JLC101611-2313 (JLC standard 10-layer, 1 oz outer + inner), 1.62 mm:
+#   F.Cu | 2313 0.089 | In1 GND | core 0.15 | In2 stripline + 12V | 2313x2 0.178 | In3 GND | core 0.15 |
+#   In4 +3V3 / +12V | 2313x2 0.178 | In5 signal + 12V | core 0.15 | In6 +5V / +12V | 2313x2 0.178 |
+#   In7 signal + VIN | core 0.15 | In8 GND | 2313 0.089 | B.Cu   (er: 2313 ~4.05, core 4.6)
+# JLC calculator rows (2026-09-28): 90R pair L1 ref L2 W 0.1349 S 0.2032; 90R pair L3 ref L2/L4
+#   W 0.1311 S 0.2032; 50R single-ended L1 W 0.1334 (all with solder mask).
+# Earlier stacks: JLC06161H-7628 (project start), JLC06161H-3313 (2026-09-19 to 2026-09-21),
+# JLC08161H-2116A HDI (2026-09-21 to 2026-09-25), JLC081611-2116 (2026-09-26 to 2026-09-28).
+# 2026-09-27: minimum copper-to-copper clearance for the whole board is 0.127 mm (5 mil), all layers.
+# Rules further down may ask for more (RF 0.1524 / 0.508, PTH holes); none allow less.
+(rule "Minimum clearance, all copper"
+	(condition "A.Net != B.Net")
+	(constraint clearance (min 0.127mm))
+)
+(rule "Track width, outer layer (1oz copper)"
+	(layer outer)
+	(condition "A.Type == 'track'")
+	(constraint track_width (min 0.127mm))
+)
+(rule "Track spacing, outer layer (1oz copper)"
+	(layer outer)
+	(constraint clearance (min 0.127mm))
+	(condition "A.Type == 'track' && B.Type == A.Type")
+)
+(rule "Track width, inner layer"
+	(layer inner)
+	(condition "A.Type == 'track'")
+	(constraint track_width (min 0.09mm))
+)
+(rule "Track spacing, inner layer"
+	(layer inner)
+	(constraint clearance (min 0.127mm))
+	(condition "A.Type == 'track' && B.Type == A.Type")
+)
+(rule "Silkscreen text"
+	(layer "?.Silkscreen")
+	(condition "A.Type == 'Text' || A.Type == 'Text Box'")
+	(constraint text_thickness (min 0.15mm))
+	(constraint text_height (min 1mm))
+)
+(rule "Pad to Silkscreen"
+	(layer outer)
+	(condition "A.Type == 'pad' && B.Layer == '?.Silkscreen'")
+	(constraint silk_clearance (min 0.15mm))
+)
+(rule "Edge (routed) to track clearance"
+	(condition "A.Type == 'track'")
+	(constraint edge_clearance (min 0.3mm))
+)
+(rule "Annular ring width (via and PTH)"
+	(layer outer)
+	(condition "A.isPlated()")
+	(constraint annular_width (min 0.075mm))
+)
+(rule "Clearance: hole to hole (perimeter), different nets"
+	(layer outer)
+	(condition "A.Net != B.Net")
+	(constraint hole_to_hole (min 0.5mm))
+)
+(rule "Clearance: hole to hole (perimeter), same net"
+	(layer outer)
+	(condition "A.Net == B.Net")
+	(constraint hole_to_hole (min 0.254mm))
+)
+(rule "Clearance: track to NPTH hole (perimeter)"
+	(condition "!A.isPlated() && B.Type == 'track' && A.Net != B.Net")
+	(constraint hole_clearance (min 0.254mm))
+)
+(rule "Clearance: track to PTH hole perimeter"
+	(condition "A.isPlated() && B.Type == 'track' && A.Net != B.Net")
+	(constraint hole_clearance (min 0.33mm))
+)
+# Via classes (2026-09-25: JLCPCB does not assemble HDI boards; standard stack JLC081611-2116,
+# through vias only, no blind/buried/laser vias, no back-drill - the SS pairs run F.Cu <-> B.Cu,
+# only the USB 2 D+/D- sit on the In2/In5 striplines, stub at 5 Gbps is irrelevant).
+#   through via, fine    F.Cu-B.Cu 0.25 / 0.15 mm - USB_90R pairs (SS, D+/D-) and tight fan-outs
+#                        (JLC multilayer minimum, surcharge applies once per order)
+#   through via, signal  F.Cu-B.Cu 0.35 / 0.20 mm - GND stitching, decoupling, CC, VBUS, GPIO, I2C
+#   through via, power   F.Cu-B.Cu 0.60 / 0.30 mm - In3 GND <-> In4 power stitching, thermal
+#                        (0.50 / 0.30-0.35 and 0.80 / 0.40 also present)
+#   filled + capped when in a pad (JLC fills every via in a pad by default)
+(rule "Microvia / blind / buried: none"
+	(condition "A.Type == 'Via' && A.Via_Type != 'Through'")
+	(constraint assertion "0")
+)
+(rule "Through via: size"
+	(condition "A.Type == 'Via' && A.Via_Type == 'Through'")
+	(constraint via_diameter (min 0.25mm))
+	(constraint hole_size (min 0.15mm) (max 0.4mm))
+	(constraint annular_width (min 0.05mm))
+)
+(rule "Via: hole to hole"
+	(condition "A.Type == 'Via' && B.Type == 'Via'")
+	(constraint hole_to_hole (min 0.2mm))
+)
+# JLC standard capability: via hole edge to other-net copper >= 0.2 mm.
+(rule "Via: hole to other copper, through via"
+	(condition "A.Type == 'Via' && A.Via_Type == 'Through' && A.Net != B.Net")
+	(constraint hole_clearance (min 0.2mm))
+)
+# USB port nets (connector escape, ESD arrays, mux): fab-limit copper clearance instead of the
+# 0.2 mm Default net class value. Covers the DN / UP port sheets and the root-level USB pairs.
+# 2026-09-25: restricted to the USB_90R netclass and to non-zone items, so zone pours are
+# governed only by each zone's own clearance property.
+(rule "USB port nets: copper clearance"
+	(condition "A.NetClass == 'USB_90R' && A.Type != 'Zone' && B.Type != 'Zone'")
+	(constraint clearance (min 0.127mm))
+)
+(rule "Clearance: track to pad"
+	(constraint clearance (min 0.127mm))
+	(condition "A.Type == 'pad' && B.Type == 'track' && A.Net != B.Net")
+)
+(rule "Clearance: pad/via to pad/via"
+	(layer outer)
+	(condition "A.isPlated() && B.isPlated() && A.Net != B.Net")
+	(constraint clearance (min 0.127mm))
+)
+# 2026-09-29: a zone's own clearance property does NOT win over custom rules - the 0.127 mm
+# minimum rules above set the pour gap to 0.127 (found on PICO_D). Pour gap to the 90R pairs is
+# therefore set explicitly by "90R pair gap to copper pours" below (0.2032 mm, the JLC coplanar row).
+# 90 ohm differential pairs (USB 3 SS pairs, USB 2 D+/D-, hub link). Current stack: see header.
+# Previous stack JLC081611-2116, JLC impedance calculator 2026-09-26 screenshot (history):
+#   90R diff, non-coplanar, with mask, L1 ref L2:    W 6.62 mil (0.1681 mm) / S 8.0 mil (0.2032 mm)
+#   90R diff, non-coplanar, no mask,  L1 ref L2:     W 6.48 mil / S 5.0 mil          (not used)
+#   90R coplanar diff, no mask, L1 ref L2:           W 7.28 mil / S 8.0 / 8.0 to Cu  (not used)
+#   90R diff, L3 ref L2 + L4 (In2; In5 is the mirror): W 6.74 mil (0.1712 mm) / S 8.0 mil (0.2032 mm)
+#   50R single ended, non-coplanar, L1 ref L2:      W 6.63 mil (0.1684 mm)
+# Local 2D field solve of this stack (calibrated to the JLC rows above) for the routing as it is:
+#   outer W 0.1753 / S 0.2032 (520 mm of pairs) = 88.2 ohm; outer W 0.1529 / S 0.2032 = 93.9 ohm
+#   In2   W 0.195  / S 0.200  (99 mm)           = 84.8 ohm; In2 W 0.1753 / S 0.200 = 89.3 ohm
+# Pair rules, one set, stack JLC101611-2313 (2026-09-28). KiCad resolves each constraint type
+# from the LAST matching rule that contains it, so each type is defined in exactly one place per
+# situation and the DRC message names the rule that actually set the limit:
+#   width + gap, routed pair  -> "90R pair, outer" / "90R pair, inner"     (error)
+#   gap at pads (courtyards)  -> "90R pair, fan-out at pads"               (error, gap only)
+#   uncoupled length          -> "90R pair, uncoupled length, USB 3 SS / USB 2" (warning)
+#   skew                      -> "90R pair skew, USB 3 SS" / "USB 2"       (error)
+# Gap window = 90 ohm +/-10 % (81-99 ohm) from the 2D solve calibrated to the JLC rows above:
+#   outer W 0.1349: gap 0.127 -> 83.4, 0.14 -> 84.9, 0.2032 -> 90.0, 0.30 -> 93.5, 0.35 -> 94.4 ohm
+#          width at gap 0.2032: 0.127 -> 93.1, 0.145 -> 87.0, 0.15 -> 85.6 ohm
+#   inner W 0.1311: gap 0.127 -> 83.0, 0.15 -> 86.0, 0.2032 -> 90.0, 0.30 -> 95.1 ohm
+#          width at gap 0.2032: 0.11 -> 96.9, 0.12 -> 93.7, 0.14 -> 87.9, 0.15 -> 85.4 ohm
+# opt = JLC calculator geometry. Width min stays at the fab limit (outer 0.127) or the +10 % edge
+# (inner 0.11) so pairs can neck into QFN / USB-C pads. Pairs keep their solder mask.
+(rule "90R pair, outer"
+	(layer outer)
+	(condition "A.inDiffPair('*')")
+	(constraint track_width (min 0.127mm) (opt 0.1349mm) (max 0.145mm))
+	(constraint diff_pair_gap (min 0.14mm) (opt 0.2032mm) (max 0.30mm))
+)
+# Inner layers: In2 (L3) stripline between the 0.15 core (In1 GND) and 2 x 2313 0.178 (In3 GND).
+# In5 and In7 have the same 0.15 / 0.178 geometry but reference power planes; keep pairs on In2.
+# Layer changes: 0.25 / 0.15 through vias; In2 -> B.Cu stub ~1.3 mm, quarter-wave ~30 GHz.
+(rule "90R pair, inner"
+	(layer inner)
+	(condition "A.inDiffPair('*')")
+	(constraint track_width (min 0.11mm) (opt 0.1311mm) (max 0.145mm))
+	(constraint diff_pair_gap (min 0.15mm) (opt 0.2032mm) (max 0.30mm))
+)
+# Copper pours (any net) next to a 90R pair: JLC coplanar geometry, 0.2032 mm from the pair to the
+# pour edge. Placed after the width/gap rules; the GPS rules further down do not match pairs.
+(rule "90R pair gap to copper pours"
+	(condition "A.inDiffPair('*') && B.Type == 'Zone'")
+	(constraint clearance (min 0.2032mm))
+)
+# Inside a footprint courtyard the pair has to split to reach pads on the part's pitch (USB-C
+# 0.5 mm, QFN 0.4/0.5 mm, ESD USON), so only the fab minimum applies to the gap there.
+(rule "90R pair, fan-out at pads"
+	(condition "A.inDiffPair('*') && A.intersectsCourtyard('*')")
+	(constraint diff_pair_gap (min 0.127mm) (max 2mm))
+)
+# Uncoupled length: 8 mm for the 5 Gb/s SuperSpeed pairs; 20 mm for USB 2 D+/D-, which split
+# around the USB-C A6/B6 A7/B7 pads and the ESD arrays (harmless at 480 Mb/s).
+(rule "90R pair, uncoupled length, USB 3 SS"
+	(severity warning)
+	(condition "A.inDiffPair('*TX*') || A.inDiffPair('*RX*') || A.inDiffPair('/L?')")
+	(constraint diff_pair_uncoupled (max 8mm))
+)
+(rule "90R pair, uncoupled length, USB 2"
+	(severity warning)
+	(condition "A.inDiffPair('*') && !A.inDiffPair('*TX*') && !A.inDiffPair('*RX*') && !A.inDiffPair('/L?')")
+	(constraint diff_pair_uncoupled (max 20mm))
+)
+# Pour-to-pair gap: see "90R pair gap to copper pours" (0.2032 mm). JLC's 90R coplanar row for this
+# stack assumes 0.2032 mm to copper; the zone clearance property alone is overridden by rules.
+# Skew, TUSB8044A datasheet SLLSF92A 11.1.3 items 7-9:
+#  - SS pair vs its complement < 5 mil TOTAL. A TX lane is up to three nets in series
+#    (hub-mux, mux-cap, cap-connector), so each net pair is held to 0.04 mm (1.6 mil).
+#  - USB 2.0 D+/D- < 50 mil (1.27 mm). TX and RX pairs do NOT need to match each other.
+#  - Any USB pair: 8 inch maximum.
+# Pair classes use the same name patterns as the USB_90R netclass. KiCad only applies these to
+# nets it recognises as a pair (names ending _P/_N, P/N, +/-).
+# Hub-to-hub SS link pairs carry root labels LA..LD: LA = Hub TX -> caps, LB = caps -> Hub1 RX,
+#   LC = Hub1 TX -> caps, LD = caps -> Hub RX.
+(rule "90R pair skew, USB 3 SS"
+	(condition "A.inDiffPair('*TX*') || A.inDiffPair('*RX*') || A.inDiffPair('/L?')")
+	(constraint skew (max 0.04mm) (within_diff_pairs))
+)
+(rule "90R pair skew, USB 2"
+	(condition "A.inDiffPair('*') && !A.inDiffPair('*TX*') && !A.inDiffPair('*RX*') && !A.inDiffPair('/L?')")
+	(constraint skew (max 1.27mm) (within_diff_pairs))
+)
+(rule "USB pair maximum length (8 in)"
+	(condition "A.inDiffPair('*')")
+	(constraint length (max 203.2mm))
+)
+# GPS antenna feed, 50 ohm coplanar single-ended on F.Cu, ref In1 through 0.089 mm 2313, solder mask ON.
+# Stack JLC101611-2313, JLC impedance calculator 2026-09-28: single-ended 50 ohm W 0.1334 mm.
+#   Local 2D solve (calibrated to that row): 0.1334 / 0.508 coplanar = 50.0 ohm, so the 0.508 mm
+#   pour gap leaves the microstrip value unchanged. (Old stack: 0.1707 / 0.508 = 49.6 ohm.)
+# Two rules so each limit lives in one place: width, and the gap to the ground POUR (zones). Tracks and
+# pads of other nets (the ESD and choke footprints' own GND pads sit < 0.5 mm away) keep the
+# RF_50R netclass 0.1524 mm.
+(rule "RF 50R trace width"
+	(condition "A.NetName == '/GPS/GPS_RF'")
+	(constraint track_width (min 0.1334mm) (opt 0.1334mm) (max 0.1334mm))
+)
+(rule "RF 50R gap to ground pour"
+	(condition "A.NetName == '/GPS/GPS_RF' && B.Type == 'Zone'")
+	(constraint clearance (min 0.508mm))
+)
+(rule "RF 50R clearance to tracks and pads"
+	(condition "A.NetName == '/GPS/GPS_RF' && B.Type != 'Zone'")
+	(constraint clearance (min 0.1524mm))
+)
+# 2026-09-24: mask-opening rules for the GPS feed removed - the feed is coated (see RF 50R trace width).
+# Template from pi_mount_gps - enable once the board outline, an 'ASSY_KEEPIN'
+# rule area and the edge connector references exist on this board:
+#(rule "JLCPCB assy keep-in 2.5mm from board edge"
+#    (condition "A.Type == 'Footprint' && A.Reference != 'J1'")
+#    (constraint assertion "A.enclosedByArea('ASSY_KEEPIN')"))
+#(rule "Edge connectors copper to edge 0.2mm"
+#    (condition "A.memberOfFootprint('J1')")
+#    (constraint edge_clearance (min 0.2mm)))
+
+# Connectors that sit at the board edge by design: USB-C shells J1-J7, Qwiic J9, SMA edge-mount J17,
+# barrel jacks J10-J16. Overrides the 0.5 mm board-setup copper-to-edge minimum for their pads only.
+(rule "Edge connectors: copper to edge 0.2mm"
+	(condition "A.memberOfFootprint('J1') || A.memberOfFootprint('J2') || A.memberOfFootprint('J3') || A.memberOfFootprint('J4') || A.memberOfFootprint('J5') || A.memberOfFootprint('J6') || A.memberOfFootprint('J7') || A.memberOfFootprint('J9') || A.memberOfFootprint('J10') || A.memberOfFootprint('J11') || A.memberOfFootprint('J12') || A.memberOfFootprint('J13') || A.memberOfFootprint('J14') || A.memberOfFootprint('J15') || A.memberOfFootprint('J16') || A.memberOfFootprint('J17')")
+	(constraint edge_clearance (min 0.2mm)))
+
+# Enclosure pass-through holes H1-H4 (were H1-H4) (3.2 mm, courtyard R3.45) sit within the courtyards of the
+# edge connectors J4/J7/J11/J18 by design (refs after the 2026-09-25 re-annotation; were J4/J7/J10/J17); 1.6 mm remains between hole edge and connector courtyard.
+(rule "Mounting holes may overlap edge-connector courtyards"
+	(condition "(A.Reference == 'H1' || A.Reference == 'H2' || A.Reference == 'H3' || A.Reference == 'H4') && (B.Reference == 'J4' || B.Reference == 'J7' || B.Reference == 'J11' || B.Reference == 'J18')")
+	(constraint courtyard_clearance (min 0mm))
+	(severity ignore))
+
+# RP2350 core regulator (Fig. 23 layout): VREG_LX runs between the 0402 pads of CIN (C164) and COUT (C165).
+# JLC multilayer minimum spacing (0.09 mm) applies only between VREG_LX and those two capacitors.
+(rule "RP2350 VREG_LX between CIN/COUT pads"
+	(condition "A.NetName == '/RP2350A/VREG_LX' && (B.memberOfFootprint('C164') || B.memberOfFootprint('C165'))")
+	(constraint clearance (min 0.09mm)))

@@ -1,0 +1,221 @@
+(footprint "Silk_Frame_118x75_R1.5"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "Board-only silkscreen frame, 118 x 75 mm rounded rectangle (R1.5) on F.SilkS and B.SilkS, 1 mm inside the 120 x 77 mm R2.5 board outline; place at the board centre")
+	(tags "silkscreen frame board outline")
+	(property "Reference" ""
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(uuid "3f74ae8b-6c3f-4bba-891c-044f5cf4ba8c")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Value" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(uuid "7d3d60d8-eaef-4041-9242-cdf7e8e45d27")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "2cc84833-8f6d-447a-a9b2-a0bef9f4796b")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "a7f410bf-704a-46da-bff1-55e440e848aa")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr board_only exclude_from_pos_files exclude_from_bom allow_missing_courtyard)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_line
+		(start -59 36)
+		(end -59 -36)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "fb9952d4-b7cc-4820-a517-00d71938f61a")
+	)
+	(fp_line
+		(start -57.5 -37.5)
+		(end 57.5 -37.5)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "c9de6851-e7ad-44bb-83db-6f21d2ae75a9")
+	)
+	(fp_line
+		(start 57.5 37.5)
+		(end -57.5 37.5)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "1033ec15-98e2-4660-ba48-be713fbba83d")
+	)
+	(fp_line
+		(start 59 -36)
+		(end 59 36)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "d69909c6-525d-4c10-9f19-95ba24ced2c0")
+	)
+	(fp_arc
+		(start -59 -36)
+		(mid -58.5607 -37.0607)
+		(end -57.5 -37.5)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "ccd76957-6bdf-40b0-b8fb-de602f6b0a91")
+	)
+	(fp_arc
+		(start -57.5 37.5)
+		(mid -58.5607 37.0607)
+		(end -59 36)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "3f0a1e58-1600-492f-9a39-321fa9af381c")
+	)
+	(fp_arc
+		(start 57.5 -37.5)
+		(mid 58.5607 -37.0607)
+		(end 59 -36)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "d55f5a23-3425-450b-8805-a25705e864ac")
+	)
+	(fp_arc
+		(start 59 36)
+		(mid 58.5607 37.0607)
+		(end 57.5 37.5)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "8b476898-7e24-4398-81c1-c3f18cc58225")
+	)
+	(fp_line
+		(start -59 36)
+		(end -59 -36)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "B.SilkS")
+		(uuid "b2c7a366-1c26-4fe9-b718-990d6cefafdc")
+	)
+	(fp_line
+		(start -57.5 -37.5)
+		(end 57.5 -37.5)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "B.SilkS")
+		(uuid "2528cdcb-4bc7-42f8-b198-f0d02dd832df")
+	)
+	(fp_line
+		(start 57.5 37.5)
+		(end -57.5 37.5)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "B.SilkS")
+		(uuid "5d717473-b060-4fbf-868a-cabd852f0c1e")
+	)
+	(fp_line
+		(start 59 -36)
+		(end 59 36)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "B.SilkS")
+		(uuid "2cea903d-29eb-4865-8bec-0e9fcc3ea817")
+	)
+	(fp_arc
+		(start -59 -36)
+		(mid -58.5607 -37.0607)
+		(end -57.5 -37.5)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "B.SilkS")
+		(uuid "890f15db-3aff-42b7-998c-9321e05e8f7e")
+	)
+	(fp_arc
+		(start -57.5 37.5)
+		(mid -58.5607 37.0607)
+		(end -59 36)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "B.SilkS")
+		(uuid "4c2183e7-f767-4f1c-a876-3647d5ed579a")
+	)
+	(fp_arc
+		(start 57.5 -37.5)
+		(mid 58.5607 -37.0607)
+		(end 59 -36)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "B.SilkS")
+		(uuid "87406e0f-3d45-4e59-abca-acab5c16c5bf")
+	)
+	(fp_arc
+		(start 59 36)
+		(mid 58.5607 37.0607)
+		(end 57.5 37.5)
+		(stroke
+			(width 0.15)
+			(type solid)
+		)
+		(layer "B.SilkS")
+		(uuid "b3ae8fc4-bd3f-4c72-97a7-706b3139e3d8")
+	)
+	(embedded_fonts no)
+)

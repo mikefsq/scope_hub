@@ -1,0 +1,155 @@
+(footprint "Switchcraft_RASM10_BarrelJack_SMD"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "Switchcraft RASM10 / RASSM10(S/P) high-amperage 5.5x2.1mm DC jack, SMT, recommended PCB layout from drawing 27139 rev A. Pad 1 = center pin, 2 = sleeve, 3 = shunt (NC switch). Panel/board edge at x=-8.15 mm. Optional post hole omitted (S variant has no post).")
+	(property "Reference" "REF**"
+		(at 3.9975 -10.345 0)
+		(layer "F.SilkS")
+		(uuid "7d11ae11-5df7-4a72-9b39-81915c86bbd4")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "Switchcraft_RASM10_BarrelJack_SMD"
+		(at 3.9975 9 0)
+		(layer "F.Fab")
+		(uuid "7240ab98-1d64-4446-a22c-308829106f51")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "0d563289-64a3-4740-ac7b-a5898fa6bcba")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "c2f12472-e284-4b14-9e8e-fd0de71b2d66")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr smd)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_line
+		(start -8.15 -5.6)
+		(end 11.15 -5.6)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "36eb0fea-4be1-424d-88d7-cba12009ee43")
+	)
+	(fp_line
+		(start -8.15 5.6)
+		(end 11.15 5.6)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "801e7cfa-8d4f-40d8-98c8-c0ea163b0cdc")
+	)
+	(fp_line
+		(start 11.15 -5.6)
+		(end 11.15 -2.9)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "d598534b-510a-4baa-9a92-3ff43ece4c61")
+	)
+	(fp_line
+		(start 11.15 5.6)
+		(end 11.15 1.4)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "4c7c7e07-2f47-479a-ad7a-e49e7b98aa3a")
+	)
+	(fp_rect
+		(start -8.4 -9.35)
+		(end 11.45 8)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "b3605a11-df59-4f41-b371-926b3cae1322")
+	)
+	(fp_line
+		(start -8.15 -7)
+		(end -8.15 7)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "37d0fe5a-8b92-4839-a9a1-c04543873b1a")
+	)
+	(fp_rect
+		(start -14.05 -4)
+		(end -8.15 4)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "ef6b76ba-fe42-44b5-8be9-54f1f83c1a59")
+	)
+	(fp_rect
+		(start -8.15 -5.5)
+		(end 11.05 5.5)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "bb77456a-e12b-4828-8055-003ad1fdaaa0")
+	)
+	(pad "1" smd rect
+		(at 9.14 -0.76)
+		(size 4.06 3.3)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "d409586e-8b0e-488e-b3a5-b392c58bb403")
+	)
+	(pad "2" smd rect
+		(at 0 -7.19)
+		(size 6.35 3.81)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "75fec7dd-bca5-4aa8-a222-68860a8a1ab3")
+	)
+	(pad "3" smd rect
+		(at 0 6.1)
+		(size 6.35 3.3)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "b65e497a-4361-4735-8e68-6ca9faf1df5f")
+	)
+	(embedded_fonts no)
+)

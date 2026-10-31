@@ -7,3 +7,10 @@ firmware/build/
 *-backups/
 *.lck
 /driver/cmd/scopehub/scopehub
+fp-info-cache
+_autosave-*
+\#auto_saved_files\#
+*-bak
+*.bak
+*-erc.rpt
+*-drc.rpt
